@@ -1,0 +1,13 @@
+{
+  "script_path": "C:/Users/Projektwoche/Desktop/gui_app/ply_to_fbx_textured.py",
+  "blender_path": "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe",
+  "input_path": "C:/Users/Projektwoche/Documents/Scans",
+  "output_path": "C:/Users/Projektwoche/Desktop/putput",
+  "target_height": "1.75",
+  "bake_size": "2048",
+  "margin": "8",
+  "rename": "",
+  "mirror": false,
+  "skip_cleanup": false,
+  "no_bake": false
+}
