@@ -1,0 +1,13 @@
+{
+  "script_path": "C:\\Users\\Projektwoche\\Desktop\\gui_pipeline_V3\\dist\\scan_to_unity_pipeline_cubefit.py",
+  "blender_path": "C:/Program Files/Blender Foundation/Blender 5.2/blender.exe",
+  "input_path": "C:/Users/Projektwoche/Desktop/input",
+  "output_path": "C:/Users/Projektwoche/Desktop/putput2",
+  "target_height": "1.75",
+  "bake_size": "2048",
+  "margin": "8",
+  "mirror": false,
+  "skip_cleanup": false,
+  "no_bake": false,
+  "edge_length": 4.00466472303207
+}
