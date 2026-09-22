@@ -1,0 +1,490 @@
+UNITY TETRIS PROJEKT – ZUSAMMENFASSUNG DES CHATVERLAUFS
+
+==================================================
+1. PROJEKTÜBERSICHT
+==================================================
+
+Projekt:
+Eigenes Tetris-Spiel in Unity 3D
+
+Aktueller Stand:
+Ein funktionierendes Tetris-Grundsystem wurde erstellt und Schritt für Schritt um moderne Tetris-Features erweitert.
+
+Grundsystem:
+- Tetrominos werden gespawnt
+- Bewegung links/rechts
+- Rotation
+- automatisches Fallen
+- Kollisionserkennung
+- Speicherung im Grid
+- Reihen löschen
+- Score-System
+- Game Over
+- Neustart
+
+Spielfeld:
+- Breite: 11 Blöcke
+- Höhe: 40 Blöcke
+- Rastergröße: 4 Unity-Einheiten
+
+
+==================================================
+2. AKTUELLE SKRIPTE
+==================================================
+
+Verwendete Hauptskripte:
+
+Steuerung.cs
+---------------
+Verantwortlich für:
+- Bewegung des aktuellen Tetrominos
+- Rotation
+- Fallen
+- Kollisionen
+- Eintragen ins Grid
+- Zeilenprüfung
+- Ghost Piece
+- Hard Drop
+- Hold-Taste
+
+
+SpawnTetromino.cs
+-----------------
+Verantwortlich für:
+- Erzeugen neuer Tetrominos
+- Next-Piece-Queue
+- Hold-System
+- Verwaltung der gehaltenen Figur
+
+
+GameManager.cs
+--------------
+Verantwortlich für:
+- Score
+- Level
+- Geschwindigkeit
+- Game Over
+- Neustart
+
+
+NextPiecePreview.cs
+-------------------
+Verantwortlich für:
+- Anzeige der nächsten drei Steine
+
+
+HoldPreview.cs
+--------------
+Verantwortlich für:
+- Anzeige des gehaltenen Steins
+
+
+==================================================
+3. GRID SYSTEM
+==================================================
+
+Das Spielfeld verwendet:
+
+public static Transform[,] grid
+
+Jeder Block eines Tetrominos wird beim Landen eingetragen:
+
+AddToGrid()
+
+Position wird berechnet über:
+
+x = position.x / 4
+y = position.y / 4
+
+
+Zeilenprüfung:
+
+HasLine()
+
+Wenn eine volle Reihe erkannt wird:
+
+DeleteLine()
+RowDown()
+
+
+Score:
+
+1 Reihe = 100 Punkte
+2 Reihen = 300 Punkte
+3 Reihen = 500 Punkte
+4 Reihen = 800 Punkte
+
+
+==================================================
+4. GHOST PIECE
+==================================================
+
+Ziel:
+Anzeige der Position, an der der aktuelle Stein landen würde.
+
+Umsetzung:
+
+- Transparente Versionen der Tetrominos erstellt
+- Ghost besitzt:
+  - kein Steuerung-Script
+  - keine Grid-Interaktion
+  - keine Collider
+
+
+Ghost wird aktualisiert bei:
+
+- Bewegung links/rechts
+- Rotation
+- Fallen
+
+
+Beim Entfernen des aktuellen Steins muss der Ghost ebenfalls gelöscht werden:
+
+Destroy(ghost)
+
+
+==================================================
+5. HARD DROP
+==================================================
+
+Idee:
+
+Der Spieler kann den Stein sofort auf die tiefste mögliche Position setzen.
+
+
+Funktionsweise:
+
+- Kopie der aktuellen Position erstellen
+- Stein solange nach unten bewegen
+- prüfen mit ValidMove()
+- bei Kollision zurückgehen
+- Stein sofort ins Grid eintragen
+
+
+Vorteil:
+
+Schnelleres Gameplay wie modernes Tetris.
+
+
+==================================================
+6. LEVEL UND GESCHWINDIGKEIT
+==================================================
+
+Das Spiel erhöht die Geschwindigkeit automatisch.
+
+
+Level-System:
+
+Alle 10 gelöschten Linien:
+
+Level +1
+
+
+Aktuelle Formel:
+
+level = totalLines / 10 + 1
+
+
+Empfohlene Geschwindigkeit:
+
+Original Tetris verwendet eine Tabelle mit Frames pro Fall.
+
+Beispiel:
+
+Level 1:
+48 Frames
+
+Level 5:
+23 Frames
+
+Level 10:
+6 Frames
+
+Später wurde empfohlen, diese Tabelle zu verwenden.
+
+
+==================================================
+7. NEXT PIECE SYSTEM
+==================================================
+
+Statt direkt zufällige Steine zu erzeugen:
+
+Vorher:
+
+Random Stein
+    |
+ Spawn
+
+
+Nachher:
+
+Queue:
+
+[T]
+[L]
+[I]
+
+
+Spawn T
+
+Neue Figur hinzufügen:
+
+[L]
+[I]
+[O]
+
+
+Immer drei kommende Steine gespeichert.
+
+
+Aktuelle Architektur:
+
+Queue<GameObject>
+
+
+Später mögliche Verbesserung:
+
+Queue<TetrominoType>
+
+
+==================================================
+8. HOLD SYSTEM
+==================================================
+
+Taste:
+
+C
+
+
+Funktion:
+
+Aktuellen Stein speichern und später zurückholen.
+
+
+Neue Variablen in SpawnTetromino:
+
+private GameObject holdPiece = null;
+
+private bool canHold = true;
+
+
+Regeln:
+
+- Pro fallendem Stein nur einmal Hold möglich
+- Nach Landung wird Hold wieder aktiviert
+
+
+Beispiel:
+
+Vorher:
+
+Hold:
+leer
+
+Aktuell:
+T
+
+
+C drücken:
+
+
+Hold:
+T
+
+Aktuell:
+nächster Stein
+
+
+
+Tausch:
+
+
+Vorher:
+
+Hold:
+O
+
+Aktuell:
+T
+
+
+Nach C:
+
+
+Hold:
+T
+
+Aktuell:
+O
+
+
+==================================================
+9. HOLD IMPLEMENTIERUNG
+==================================================
+
+Im Steuerung-Skript:
+
+Neue Variable:
+
+public GameObject originalPrefab;
+
+
+Damit weiß der aktive Stein, welches Prefab er ursprünglich hatte.
+
+
+Beim Spawn:
+
+piece.GetComponent<Steuerung>().originalPrefab = nextPiece;
+
+
+HoldPiece():
+
+Fall 1:
+
+Hold leer:
+
+- aktuellen Prefab speichern
+- Ghost löschen
+- Stein zerstören
+- nächsten Stein spawnen
+
+
+Fall 2:
+
+Hold enthält Stein:
+
+- alten Hold zwischenspeichern
+- aktuellen Stein in Hold speichern
+- aktuellen Stein löschen
+- alten Hold-Stein spawnen
+
+
+==================================================
+10. HOLD PREVIEW
+==================================================
+
+Hold-Anzeige wurde ähnlich wie Next-Piece gebaut.
+
+
+Neues Objekt:
+
+HoldPreview
+
+
+Script:
+
+HoldPreview.cs
+
+
+Aufgabe:
+
+- alten Vorschau-Stein löschen
+- neuen Hold-Stein erzeugen
+- Steuerung entfernen
+- Größe reduzieren
+
+
+Aktualisierung:
+
+Nach Änderung von:
+
+holdPiece
+
+
+wird ausgeführt:
+
+holdPreview.UpdateHoldPreview(holdPiece)
+
+
+==================================================
+11. AKTUELLE PROBLEME / OFFENE PUNKTE
+==================================================
+
+1. Hold Preview:
+- Anzeige funktioniert
+- Aktualisierung muss überprüft werden
+
+
+2. Vorschau-Steine:
+- müssen von Steuerung und Ghost bereinigt werden
+
+
+3. Zentrierung:
+Hold und Next-Piece-Anzeige müssen angepasst werden.
+
+Problem:
+
+I-, O- und andere Tetrominos besitzen unterschiedliche Pivot-Punkte.
+
+
+Lösung:
+
+Eigene Preview-Positionen oder automatische Zentrierung.
+
+
+4. Architekturverbesserung:
+
+Noch nicht umgesetzt:
+
+Umstellung von:
+
+Queue<GameObject>
+
+auf:
+
+Queue<TetrominoType>
+
+
+Vorteile:
+
+- einfacher Hold
+- einfacheres 7-Bag-System
+- bessere Erweiterbarkeit
+
+
+==================================================
+12. EMPFOHLENE NÄCHSTE FEATURES
+==================================================
+
+Reihenfolge:
+
+1. Hold Preview vollständig verbessern
+2. Next Preview sauber zentrieren
+3. 7-Bag Random System
+4. T-Spin-Erkennung
+5. Back-to-Back Bonus
+6. Combo-System
+7. Hard Drop Animation
+8. Soundeffekte
+9. Partikeleffekte
+10. Menüsystem
+
+
+==================================================
+13. AKTUELLER PROJEKTSTATUS
+==================================================
+
+Bereits umgesetzt:
+
+[X] Bewegung
+[X] Rotation
+[X] Grid-System
+[X] Linien löschen
+[X] Score
+[X] Game Over
+[X] Ghost Piece
+[X] Hard Drop
+[X] Level-System
+[X] Geschwindigkeit steigt
+[X] Next Piece Queue
+[X] Hold Funktion
+[X] Hold Anzeige
+
+
+Projekt befindet sich aktuell auf dem Stand eines
+modernen Tetris-Prototyps.
+
+Nächster sinnvoller Entwicklungsschritt:
+
+Hold/Next Preview perfektionieren und anschließend
+7-Bag-System + Tetris Guideline Features hinzufügen.
