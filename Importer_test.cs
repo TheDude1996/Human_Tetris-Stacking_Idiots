@@ -149,23 +149,35 @@ public class ModelAndTextureManager2023 : MonoBehaviour
             Directory.CreateDirectory(projektOrdnerPfad);
         }
 
-        // 1. Kopiere die Textur zuerst (Wichtig, damit Unity sie beim FBX-Import direkt findet!)
+        // Pfade innerhalb von Unity definieren
+        string relativeTexturPfad = "Assets/" + unityZielOrdner + "/" + zielTexturName;
+        string relativeModellPfad = "Assets/" + unityZielOrdner + "/" + zielModellName;
+
+        // 1. Textur kopieren & ERZWUNGEN neu laden
         if (File.Exists(texturHauptPfad))
         {
             string texturZielInProjekt = Path.Combine(projektOrdnerPfad, zielTexturName);
             File.Copy(texturHauptPfad, texturZielInProjekt, true);
-            AssetDatabase.ImportAsset("Assets/" + unityZielOrdner + "/" + zielTexturName);
+            
+            // ForceUpdate zwingt Unity, die alte Datei aus dem Cache zu werfen
+            AssetDatabase.ImportAsset(relativeTexturPfad, ImportAssetOptions.ForceUpdate);
         }
 
-        // 2. Kopiere das 3D-Modell
+        // 2. 3D-Modell kopieren & ERZWUNGEN neu laden
         string modellZielInProjekt = Path.Combine(projektOrdnerPfad, zielModellName);
         try
         {
             File.Copy(modellHauptPfad, modellZielInProjekt, true);
-            string relativeAssetPath = "Assets/" + unityZielOrdner + "/" + zielModellName;
-            AssetDatabase.ImportAsset(relativeAssetPath);
             
-            Debug.Log($"[Editor] FBX und Textur erfolgreich in '{unityZielOrdner}' hochgeladen.");
+            // ForceUpdate zwingt Unity, das 3D-Modell komplett neu einzulesen
+            AssetDatabase.ImportAsset(relativeModellPfad, ImportAssetOptions.ForceUpdate);
+            
+            // Schreibt alle ungespeicherten Asset-Änderungen physisch auf die Festplatte
+            AssetDatabase.SaveAssets();
+            // Erneuert die Anzeige im Editor-Fenster
+            AssetDatabase.Refresh();
+            
+            Debug.Log($"[Editor] FBX und Textur erfolgreich in '{unityZielOrdner}' überschrieben und neu geladen.");
         }
         catch (Exception e)
         {
