@@ -5,7 +5,7 @@ a = Analysis(
     ['gui_app.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('pipeline.ico', '.')],  # Fenster-Icon, wird zur Laufzeit aus der .exe entpackt
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,4 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon='pipeline.ico',  # Icon der .exe im Explorer
 )

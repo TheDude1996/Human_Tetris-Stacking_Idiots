@@ -52,6 +52,10 @@ CONFIG_FILENAME = "pipeline_gui_config.json"
 BASE_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
 CONFIG_PATH = os.path.join(BASE_DIR, CONFIG_FILENAME)
 
+# Icon: in der .exe eingebettet (PyInstaller entpackt es nach sys._MEIPASS), sonst neben dieser Datei
+ICON_NAME = "pipeline.ico"
+ICON_PATH = os.path.join(getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__))), ICON_NAME)
+
 SCRIPT_NAME = "ply_head_to_lowpoly_glb.py"
 SCRIPT_PATH = os.path.join(BASE_DIR, SCRIPT_NAME)
 
@@ -198,6 +202,7 @@ class PipelineGUI(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title(APP_TITLE)
+        self._apply_icon()
         self.geometry("760x700")
         self.minsize(680, 620)
 
@@ -229,6 +234,13 @@ class PipelineGUI(tk.Tk):
         self.process = None
         self._build_ui()
         self._watch_input()
+
+    def _apply_icon(self):
+        """pipeline.ico fuer Titelleiste, Taskleiste und alle Dialoge (default= gilt fuer jedes Fenster)."""
+        try:
+            self.iconbitmap(default=ICON_PATH)
+        except tk.TclError:
+            pass  # Icon fehlt: Standard-Icon, App laeuft trotzdem
 
     def _build_ui(self):
         notebook = ttk.Notebook(self)
@@ -664,5 +676,12 @@ class PipelineGUI(tk.Tk):
 
 
 if __name__ == "__main__":
+    if os.name == "nt":
+        # Eigene App-Kennung: Windows zeigt dann in der Taskleiste pipeline.ico statt des Python-Icons
+        try:
+            import ctypes
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("HumanTetris.PipelineTool")
+        except (AttributeError, OSError):
+            pass
     app = PipelineGUI()
     app.mainloop()
