@@ -1,5 +1,5 @@
 """
-gui_app.py  (Pipeline V9)
+gui_app.py  (Pipeline V9.1)
 ---------------------------
 Grafische Oberflaeche fuer ply_head_to_lowpoly_glb.py: wandelt PLY-Kopfscans in
 polygonreduzierte GLB-Koepfe fuer Human Tetris (Unity) um. Laesst dich:
@@ -50,7 +50,7 @@ import time
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, simpledialog
 
-APP_TITLE = "Human Tetris – Scan zu Unity Pipeline V9"
+APP_TITLE = "Human Tetris – Scan zu Unity Pipeline V9.1"
 CONFIG_FILENAME = "pipeline_gui_config.json"
 
 # Liegt neben der .exe (bzw. neben dem Skript im Entwicklungsmodus)
@@ -388,7 +388,7 @@ class PipelineGUI(tk.Tk):
         title.pack(anchor="w")
         tk.Label(title, text="HUMAN", bg=BG, fg=TEXT, font=(FONT, 22, "bold")).pack(side="left")
         tk.Label(title, text=" TETRIS", bg=BG, fg=GREEN, font=(FONT, 22, "bold")).pack(side="left")
-        tk.Label(header, text="SCAN  \u2192  BLENDER  \u2192  UNITY    \u00b7    PIPELINE V9",
+        tk.Label(header, text="SCAN  \u2192  BLENDER  \u2192  UNITY    \u00b7    PIPELINE V9.1",
                  bg=BG, fg=CYAN, font=(FONT, 9, "bold")).pack(anchor="w", pady=(0, 8))
         tk.Frame(header, bg=PINK, height=3).pack(fill="x")
 
