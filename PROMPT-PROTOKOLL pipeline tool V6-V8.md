@@ -79,3 +79,16 @@ Dieses Protokoll dokumentiert die Prompts aus dem Chat vom 23.11.2026 (Claude Co
 **Prompt:** „erstelle ein kleines protokoll zu den fpromts der pipline, fasse auch alle anderen promt protokolle zur pipeline aus dem repo zusammen und erstelle protokoll_final“
 
 **Umsetzung:** Dieses Protokoll und `PROMPT-PROTOKOLL_final.md` (Zusammenfassung aller Pipeline-Protokolle).
+
+## 14. V9: ReconstructMe-Anbindung und neues Design
+
+**Prompts:** „Kann man aus 2 Anwendungen ein neues fester machen mit eigenen Eingabe Feldern und Design ?“ – „Pipeline Tool v8 von human Tetris repo, Reconstruct me ist ein fertige Software“ – „Mach den Pfad auswählbar wie bei Blender, wir speichern aus reconstruct me per Hand, in den Input Ordner, auch dieser sollte sich in der gui angeben lassen, Design so wie die Website und das Spiel“
+
+**Umsetzung (Ordner `Pipeline V9`, Chat vom 24.11.2026, Claude Opus 5.5):**
+- Neue Karte „01 Scan mit ReconstructMe“: Knopf „ReconstructMe starten“ (startet die fertige Software), Statusanzeige „ReconstructMe läuft“.
+- Pfad zu ReconstructMe unter „Einstellungen → Programme“ wählbar wie bei Blender (Durchsuchen, wird in `pipeline_gui_config.json` gespeichert, Anzeige „Gefunden / nicht gefunden“).
+- Der Input-Ordner bleibt unter „02 Ordner“ wählbar und wird in Karte 01 als Speicherziel angezeigt, mit „Pfad kopieren“ (zum Einfügen im Speichern-Dialog von ReconstructMe) und „Ordner öffnen“.
+- Ein neu gespeicherter Scan wird wie bisher automatisch erkannt und ausgewählt; zusätzlich pinker Hinweis „Neuer Scan erkannt“ und ein Signalton.
+- Design wie Website und Spiel: Hintergrund `#0A0B1A`, Karten `#12142A`, Rand `#2A2D4D`, Akzente Grün `#A6FF00`, Cyan `#4DE8FF`, Pink `#FF1493`; nummerierte Karten 01–04, grüner Start-Knopf, farbiges Log. Die Oberfläche ist scrollbar (passt auch auf kleine Bildschirme).
+- Pipeline-Logik (Blender-Aufruf, Nummerierung, `name.txt`) unverändert gegenüber V8.
+- Getestet unter Linux mit Platzhaltern für Blender und ReconstructMe. Die `PipelineTool.exe` muss unter Windows neu gebaut werden: `python -m PyInstaller --noconfirm PipelineTool.spec` im Ordner `Pipeline V9`.
